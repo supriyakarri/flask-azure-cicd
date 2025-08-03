@@ -3,16 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <title>Flask Azure CI/CD Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to right, #667eea, #764ba2);
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .card {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    a.btn-custom {
+      background-color: white;
+      color: #764ba2;
+      font-weight: bold;
+      border-radius: 30px;
+      padding: 10px 25px;
+      text-decoration: none;
+    }
+    a.btn-custom:hover {
+      background-color: #f1f1f1;
+      color: #5a2f8d;
+    }
+  </style>
 </head>
-<body class="bg-light text-center">
-  <div class="container mt-5">
-    <h1 class="display-4 text-primary">🚀 Flask App Deployed via CI/CD</h1>
-    <p class="lead">This web app is automatically deployed using Azure DevOps and Azure App Service.</p>
-    <hr>
-    <p><strong>Created by:</strong> Supriya Karri</p>
-    <p><strong>Status:</strong> Pipeline ✅ Successful</p>
-    <a href="https://github.com/your-username/your-repo" class="btn btn-dark mt-3">View Code on GitHub</a>
+<body>
+  <div class="container vh-100 d-flex justify-content-center align-items-center">
+    <div class="card text-center">
+      <h1 class="display-5 fw-bold">🚀 Flask CI/CD Pipeline</h1>
+      <p class="lead">Deployed on Azure App Service using Azure DevOps</p>
+      <hr class="my-4">
+      <p>Built by <strong>Supriya Karri</strong></p>
+      <p>Status: <span class="badge bg-success">Pipeline Successful</span></p>
+      <a href="https://github.com/your-username/your-repo" class="btn btn-custom mt-3" target="_blank">🔗 View GitHub Repo</a>
+    </div>
   </div>
 </body>
 </html>
