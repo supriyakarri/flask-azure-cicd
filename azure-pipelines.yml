@@ -1,5 +1,5 @@
 trigger:
-  - main
+- main
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -7,52 +7,38 @@ pool:
 variables:
   azureSubscription: 'AzureRM-FlaskDemo'
   appName: 'flask-devops-demo'
-  resourceGroup: 'FlaskCICD-RG'
-  packagePath: '$(System.DefaultWorkingDirectory)/drop'
+  resourceGroupName: 'FlaskCICD-RG'
 
-stages:
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.x'
+    addToPath: true
 
-  - stage: Build
-    jobs:
-      - job: BuildJob
-        steps:
-          - task: UsePythonVersion@0
-            inputs:
-              versionSpec: '3.x'
-              addToPath: true
+- script: |
+    python -m venv env
+    source env/bin/activate
+    pip install -r requirements.txt
+  displayName: 'Install dependencies'
 
-          - script: |
-              python -m venv venv
-              source venv/bin/activate
-              pip install -r requirements.txt
-            displayName: 'Install dependencies'
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/flask-app.zip'
+    replaceExistingArchive: true
 
-          - task: ArchiveFiles@2
-            inputs:
-              rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
-              includeRootFolder: false
-              archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/flaskapp.zip'
-              replaceExistingArchive: true
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
 
-          - task: PublishBuildArtifacts@1
-            inputs:
-              PathtoPublish: '$(Build.ArtifactStagingDirectory)/flaskapp.zip'
-              ArtifactName: 'drop'
-              publishLocation: 'Container'
-
-  - stage: Deploy
-    dependsOn: Build
-    jobs:
-      - deployment: DeployWebApp
-        environment: 'production'
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - task: AzureWebApp@1
-                  inputs:
-                    azureSubscription: '$(azureSubscription)'
-                    appType: 'webApp'
-                    appName: '$(appName)'
-                    package: '$(packagePath)/flaskapp.zip'
+- task: AzureWebApp@1
+  inputs:
+    azureSubscription: '$(azureSubscription)'
+    appType: 'webAppLinux'
+    appName: '$(appName)'
+    package: '$(Build.ArtifactStagingDirectory)/flask-app.zip'
+    runtimeStack: 'PYTHON|3.11'
